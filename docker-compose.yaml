@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:12.2
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: dbadmin
+  redis:
+    image: redis:5.0
+    ports:
+      - 6379:6379
+  # api:
+  #   build: 
+  #     dockerfile: Dockerfile
+  #     context: .
+  #   env_file: .env.docker
+  #   ports:
+  #     - 3000:3000
+  #   depends_on: 
+  #     - db
+      # - redis
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
