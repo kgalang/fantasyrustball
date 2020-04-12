@@ -3,7 +3,7 @@
 
 use crate::handlers::{
     health::get_health,
-    user::{create_user, delete_user, get_user, get_users, update_user},
+    users::{create_user, delete_user, get_user, get_users, update_user},
 };
 use actix_web::web;
 
@@ -16,7 +16,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
             web::scope("/api/v1")
                 // USER routes
                 .service(
-                    web::scope("/user")
+                    web::scope("/users")
                         .route("/{id}", web::get().to(get_user))
                         .route("/{id}", web::put().to(update_user))
                         .route("/{id}", web::delete().to(delete_user))

@@ -1,11 +1,11 @@
 #[cfg(test)]
 mod tests {
-    use crate::handlers::user::{tests::get_first_users_id, CreateUserRequest};
+    use crate::handlers::users::{tests::get_first_users_id, CreateUserRequest};
     use crate::tests::helpers::tests::{assert_get, assert_post};
     use actix_web::web::Path;
     use uuid::Uuid;
 
-    const PATH: &str = "/api/v1/user";
+    const PATH: &str = "/api/v1/users";
 
     #[actix_rt::test]
     async fn it_gets_a_user() {

@@ -1,7 +1,7 @@
 use crate::auth::hash;
 use crate::database::PoolType;
 use crate::errors::ApiError;
-use crate::handlers::user::{UserResponse, UsersResponse};
+use crate::handlers::users::{UserResponse, UsersResponse};
 use crate::schema::users;
 use chrono::{NaiveDateTime, Utc};
 use diesel::prelude::*;

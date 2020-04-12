@@ -1,7 +1,7 @@
 use crate::database::PoolType;
 use crate::errors::ApiError;
 use crate::helpers::{respond_json, respond_ok};
-use crate::models::user::{create, delete, find, get_all, update, NewUser, UpdateUser, User};
+use crate::models::users::{create, delete, find, get_all, update, NewUser, UpdateUser, User};
 use crate::validate::validate;
 use actix_web::web::{block, Data, HttpResponse, Json, Path};
 use rayon::prelude::*;
@@ -148,7 +148,7 @@ impl From<Vec<User>> for UsersResponse {
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    use crate::models::user::tests::create_user as model_create_user;
+    use crate::models::users::tests::create_user as model_create_user;
     use crate::tests::helpers::tests::{get_data_pool, get_pool};
 
     pub fn get_all_users() -> UsersResponse {
