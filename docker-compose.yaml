@@ -7,6 +7,8 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: dbadmin
+    ports:
+      - 5432:5432
   redis:
     image: redis:5.0
     ports:

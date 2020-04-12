@@ -11,15 +11,15 @@ pub struct PrivateClaim {
     exp: i64,
 }
 
-impl PrivateClaim {
-    pub fn new(user_id: Uuid, email: String) -> Self {
-        Self {
-            user_id,
-            email,
-            exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
-        }
-    }
-}
+// impl PrivateClaim {
+//     pub fn new(user_id: Uuid, email: String) -> Self {
+//         Self {
+//             user_id,
+//             email,
+//             exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
+//         }
+//     }
+// }
 
 // /// Create a json web token (JWT)
 // pub fn create_jwt(private_claim: PrivateClaim) -> Result<String, ApiError> {

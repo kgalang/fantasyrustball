@@ -93,8 +93,6 @@ pub async fn create_user(
         last_name: params.last_name.to_string(),
         email: params.email.to_string(),
         password: params.password.to_string(),
-        created_by: user_id.to_string(),
-        updated_by: user_id.to_string(),
     }
     .into();
     let user = block(move || create(&pool, &new_user)).await?;
@@ -116,7 +114,6 @@ pub async fn update_user(
         first_name: params.first_name.to_string(),
         last_name: params.last_name.to_string(),
         email: params.email.to_string(),
-        updated_by: user_id.to_string(),
     };
     let user = block(move || update(&pool, &update_user)).await?;
     respond_json(user.into())

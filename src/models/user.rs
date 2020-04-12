@@ -14,9 +14,7 @@ pub struct User {
     pub last_name: String,
     pub email: String,
     pub password: String,
-    pub created_by: String,
     pub created_at: NaiveDateTime,
-    pub updated_by: String,
     pub updated_at: NaiveDateTime,
 }
 
@@ -27,8 +25,6 @@ pub struct NewUser {
     pub last_name: String,
     pub email: String,
     pub password: String,
-    pub created_by: String,
-    pub updated_by: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, AsChangeset)]
@@ -38,7 +34,6 @@ pub struct UpdateUser {
     pub first_name: String,
     pub last_name: String,
     pub email: String,
-    pub updated_by: String,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -129,9 +124,7 @@ impl From<NewUser> for User {
             last_name: user.last_name,
             email: user.email,
             password: hash(&user.password),
-            created_by: user.created_by,
             created_at: Utc::now().naive_utc(),
-            updated_by: user.updated_by,
             updated_at: Utc::now().naive_utc(),
         }
     }
@@ -155,8 +148,6 @@ pub mod tests {
             last_name: "Test".to_string(),
             email: "model-test@nothing.org".to_string(),
             password: "123456".to_string(),
-            created_by: user_id.to_string(),
-            updated_by: user_id.to_string(),
         };
         let user: User = new_user.into();
         create(&get_pool(), &user)
@@ -201,7 +192,6 @@ pub mod tests {
             first_name: "ModelUpdate".to_string(),
             last_name: "TestUpdate".to_string(),
             email: "model-update-test@nothing.org".to_string(),
-            updated_by: user.id.to_string(),
         };
         let updated = update(&get_pool(), &update_user);
         println!("{:?}", updated);
@@ -218,7 +208,6 @@ pub mod tests {
             first_name: "ModelUpdateFailure".to_string(),
             last_name: "TestUpdateFailure".to_string(),
             email: "model-update-failure-test@nothing.org".to_string(),
-            updated_by: user_id.to_string(),
         };
         let updated = update(&get_pool(), &update_user);
         assert!(updated.is_err());
