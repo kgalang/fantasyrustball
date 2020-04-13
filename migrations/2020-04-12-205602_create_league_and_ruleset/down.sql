@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS league_rulesets;
+DROP TABLE IF EXISTS leagues;
