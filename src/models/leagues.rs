@@ -1,10 +1,9 @@
 
-use chrono::{NaiveDateTime, Utc};
+use chrono::NaiveDateTime;
 use uuid::Uuid;
-use crate::handlers::leagues::{LeagueResponse, LeaguesResponse};
 use crate::database::PoolType;
 use crate::errors::ApiError;
-use crate::schema::{leagues, league_rulesets};
+use crate::schema::leagues;
 use diesel::prelude::*;
 
 
@@ -17,7 +16,7 @@ pub struct League {
   pub current_round: Option<i32>,
 }
 
-pub fn get_all(pool: &PoolType) -> Result<Vec<(League)>, ApiError> {
+pub fn get_all(pool: &PoolType) -> Result<Vec<League>, ApiError> {
   let conn = pool.get()?;
   let all_leagues = leagues::table.load(&conn)?;
 
@@ -30,7 +29,7 @@ pub mod tests {
   use super::*;
   use crate::tests::helpers::tests::get_pool;
 
-  pub fn get_all_leagues() -> Result<Vec<(League)>, ApiError> {
+  pub fn get_all_leagues() -> Result<Vec<League>, ApiError> {
     let pool = get_pool();
     get_all(&pool)
   }
