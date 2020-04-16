@@ -96,7 +96,7 @@ pub async fn create_user(
     }
     .into();
     let user = block(move || create(&pool, &new_user)).await?;
-    respond_json(user.into())
+    respond_json(user)
 }
 
 /// Update a user
@@ -116,7 +116,7 @@ pub async fn update_user(
         email: params.email.to_string(),
     };
     let user = block(move || update(&pool, &update_user)).await?;
-    respond_json(user.into())
+    respond_json(user)
 }
 
 /// Delete a user
