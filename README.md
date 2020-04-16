@@ -154,3 +154,56 @@ https://github.com/ddimaria/rust-actix-example
 This project is licensed under:
 
 - MIT license (LICENSE-MIT or http://opensource.org/licenses/MIT)
+
+
+### Personal Notes and Gotchas:
+
+**Diesel ORM:**
+- Posgres INT translates to schema Int4 which isn’t in diesel rust docs. I initially thought this was an issue but `i32` type still works.
+- Wasn’t building because uuid not implementing the correct traits for diesel.
+  - needed to specifically use version 0.7 of uuid with diesel
+  - Can’t use version 0.8
+- Struct needs to be in the same order as schema.
+- Struct used to query diesel needs to have fields in the same order as your `schema.rs` table macro.
+  - Example schema:
+    ```
+    table! {
+        leagues (id) {
+            id -> Uuid,
+            name -> Varchar,
+            start -> Timestamp,
+            rounds -> Int4,
+            current_round -> Nullable<Int4>,
+        }
+    }
+    ```
+    - This struct won't work because it expects the first row field type to be `Uuid`
+    ```
+    pub struct League {
+        pub name: String,
+        pub id: Uuid,
+        pub start: NaiveDateTime,
+        pub rounds: i32,
+        pub current_round: Option<i32>,
+    }
+    ```
+- When looking into diesel, people often talk about `print_sql` macro. This doesn't exist in their updated docs anymore so I'm guessing they removed it.
+  - Use the `debug_query` function instead:
+    ```
+    let query = leagues::table.inner_join(league_rulesets::table)
+        .select(LEAGUE_DETAILS_COLUMNS);
+
+    let debug = diesel::debug_query::<diesel::pg::Pg, _>(&query)
+        .to_string();
+    println!("debug statement: {:?}\n", debug);
+    ```
+
+**Useful Resources I've Ran Into:**
+- Article that clearly explains `From`, `Into`, and type conversions in general: https://ricardomartins.cc/2016/08/03/convenient_and_idiomatic_conversions_in_rust
+- Ancient rust github issue comment giving a little more detail on why some warnings show up for `unused` types or structs even though you may seem to use them: https://github.com/rust-lang/rust/issues/18618#issuecomment-61709955
+- One of the more straightforward example articles of exploring Diesel. These were surprisingly hard to come by: http://siciarz.net/24-days-rust-diesel/
+
+**Misc:**
+- 2020-04-15
+  - Rust has been a lot of fun so far. Learning about generics, macros, and traits have been such a different type of programming so far.
+  - Right now, I think I'm mainly following how I would normally write my Go code with everything being structs and being more object oriented. Later on I hope to start seeing where enums, generics, derived macros, and/or procedural macros will fit into how I code.
