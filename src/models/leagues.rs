@@ -3,6 +3,7 @@ use chrono::NaiveDateTime;
 use uuid::Uuid;
 use crate::database::PoolType;
 use crate::errors::ApiError;
+use crate::handlers::leagues::{LeaguesResponse};
 use crate::schema::{leagues, league_rulesets};
 use diesel::prelude::*;
 
@@ -24,16 +25,6 @@ pub struct Ruleset {
   pub league_id: Uuid,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Queryable)]
-pub struct LeagueDetails {
-  pub id: Uuid,
-  pub name: String,
-  pub start: NaiveDateTime,
-  pub rounds: i32,
-  pub current_round: Option<i32>,
-  pub points_per_mile: i32,
-}
-
 type LeagueDetailsColumns = (
   leagues::id,
   leagues::name,
@@ -52,7 +43,7 @@ pub const LEAGUE_DETAILS_COLUMNS: LeagueDetailsColumns = (
   league_rulesets::points_per_mile,
 );
 
-pub fn get_all_details(pool: &PoolType) -> Result<Vec<LeagueDetails>, ApiError> {
+pub fn get_all_details(pool: &PoolType) -> Result<LeaguesResponse, ApiError> {
   let conn = pool.get()?;
   let query = leagues::table.inner_join(league_rulesets::table)
     .select(LEAGUE_DETAILS_COLUMNS);
@@ -62,7 +53,7 @@ pub fn get_all_details(pool: &PoolType) -> Result<Vec<LeagueDetails>, ApiError> 
   let all_leagues = query.load(&conn)?;
   println!("{:?}\n", all_leagues);
 
-  Ok(all_leagues)
+  Ok(all_leagues.into())
 }
 
 
@@ -71,7 +62,7 @@ pub mod tests {
   use super::*;
   use crate::tests::helpers::tests::get_pool;
 
-  pub fn get_all_leagues_with_details() -> Result<Vec<LeagueDetails>, ApiError> {
+  pub fn get_all_leagues_with_details() -> Result<LeaguesResponse, ApiError> {
     let pool = get_pool();
     get_all_details(&pool)
   }
