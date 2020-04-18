@@ -216,3 +216,21 @@ This project is licensed under:
 - 2020-04-15
   - Rust has been a lot of fun so far. Learning about generics, macros, and traits have been such a different type of programming so far.
   - Right now, I think I'm mainly following how I would normally write my Go code with everything being structs and being more object oriented. Later on I hope to start seeing where enums, generics, derived macros, and/or procedural macros will fit into how I code.
+
+
+**Issue with database and too many connections:**
+2020-04-18:
+- When I start my server with `cargo run` it runs successfully but it `pg_stat_activity` in my table, it shows that I've opened my max amount of connections.
+- `pg_stat_activity` entry times are the same time that's logged when `actix_server` starts.
+- Screen shots and files of pg_stat_activity in `./db-conn-issues/`
+- Still need to work on narrowing it down.
+- All the idle queries say something about setting encoding to UTF-8 so I tried doing that manually in my migration. Didn't help.
+  - This query originally comes from internals of Diesel when initially trying to make connections to db.
+  - Same behavior without manually adding this to the migration.
+- Links:
+  - https://github.com/actix/actix-web/issues/439
+  - https://github.com/actix/actix-web/issues/1268
+  - https://github.com/actix/actix-web/issues/24
+  - https://github.com/diesel-rs/diesel/issues/2104
+  - https://github.com/diesel-rs/diesel/issues/2340
+  

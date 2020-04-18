@@ -1,0 +1,8 @@
+"datid","datname","pid","usesysid","usename","application_name","client_addr","client_hostname","client_port","backend_start","xact_start","query_start","state_change","wait_event_type","wait_event","state","backend_xid","backend_xmin","query","backend_type"
+,,61,,,"",,,,2020-04-18 14:01:39,,,,Activity,AutoVacuumMain,,,,"",autovacuum launcher
+,,63,10,postgres,"",,,,2020-04-18 14:01:39,,,,Activity,LogicalLauncherMain,,,,"",logical replication launcher
+13408,postgres,64,10,postgres,DBeaver 7.0.2 - Main <postgres>,"172.27.0.1",,37632,2020-04-18 14:01:40,2020-04-18 14:34:33,2020-04-18 14:34:33,2020-04-18 14:34:33,,,active,,"492",SELECT * FROM pg_catalog.pg_stat_activity,client backend
+13408,postgres,65,10,postgres,DBeaver 7.0.2 - Metadata <postgres>,"172.27.0.1",,37634,2020-04-18 14:01:40,,2020-04-18 14:02:16,2020-04-18 14:02:16,Client,ClientRead,idle,,,"SELECT i.*,c.relnamespace FROM pg_catalog.pg_inherits i,pg_catalog.pg_class c WHERE i.inhrelid=$1 AND c.oid=i.inhparent ORDER BY i.inhseqno",client backend
+,,59,,,"",,,,2020-04-18 14:01:39,,,,Activity,BgWriterHibernate,,,,"",background writer
+,,58,,,"",,,,2020-04-18 14:01:39,,,,Activity,CheckpointerMain,,,,"",checkpointer
+,,60,,,"",,,,2020-04-18 14:01:39,,,,Activity,WalWriterMain,,,,"",walwriter
