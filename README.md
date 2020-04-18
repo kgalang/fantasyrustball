@@ -198,6 +198,15 @@ This project is licensed under:
     println!("debug statement: {:?}\n", debug);
     ```
 
+**Debugging on VS Code:**
+- use CodeLLDB extension
+  - Can use this to debug build executable and unit tests out of the box
+- To debug from `cargo run` and server process is running on local port:
+  - Run `cargo run` in one terminal
+  - Press `command + shift + p` (for mac) and click `LLDB: Attach to Process...`
+  - Then search for `fantasyrustball` and choose that process.
+  - Breakpoints in API should stop once the code is called.
+
 **Useful Resources I've Ran Into:**
 - Article that clearly explains `From`, `Into`, and type conversions in general: https://ricardomartins.cc/2016/08/03/convenient_and_idiomatic_conversions_in_rust
 - Ancient rust github issue comment giving a little more detail on why some warnings show up for `unused` types or structs even though you may seem to use them: https://github.com/rust-lang/rust/issues/18618#issuecomment-61709955

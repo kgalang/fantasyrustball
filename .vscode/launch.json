@@ -1,0 +1,56 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'fantasyrustball'",
+      "cargo": {
+        "args": ["build", "--bin=fantasyrustball", "--package=fantasyrustball"],
+        "filter": {
+          "name": "fantasyrustball",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'fantasyrustball'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=fantasyrustball",
+          "--package=fantasyrustball"
+        ],
+        "filter": {
+          "name": "fantasyrustball",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug run 'fantasyrustball'",
+      "cargo": {
+        "args": ["run", "--bin=fantasyrustball", "--package=fantasyrustball"],
+        "filter": {
+          "name": "fantasyrustball",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "exitCommands": ["^C"]
+    }
+  ]
+}
