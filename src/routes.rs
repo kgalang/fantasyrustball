@@ -4,7 +4,7 @@
 use crate::handlers::{
     health::get_health,
     users::{create_user, delete_user, get_user, get_users, update_user},
-    leagues::{get_leagues},
+    leagues::{get_league, get_leagues},
 };
 use actix_web::web;
 
@@ -27,6 +27,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
                 // LEAGUE routes
                 .service(
                     web::scope("/leagues")
+                        .route("/{id}", web::get().to(get_league))
                         .route("", web::get().to(get_leagues)),
                 )
         );

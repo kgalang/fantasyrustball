@@ -1,12 +1,10 @@
-
-use chrono::NaiveDateTime;
-use uuid::Uuid;
 use crate::database::PoolType;
 use crate::errors::ApiError;
-use crate::handlers::leagues::{LeaguesResponse};
-use crate::schema::{leagues, league_rulesets};
+use crate::handlers::leagues::{LeagueDetails, LeaguesResponse};
+use crate::schema::{league_rulesets, leagues};
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
-
+use uuid::Uuid;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Queryable, Identifiable)]
 pub struct League {
@@ -43,19 +41,33 @@ pub const LEAGUE_DETAILS_COLUMNS: LeagueDetailsColumns = (
     league_rulesets::points_per_mile,
 );
 
+pub fn find_with_details(pool: &PoolType, league_id: Uuid) -> Result<LeagueDetails, ApiError> {
+    use crate::schema::leagues::dsl::{id, leagues};
+
+    let not_found = format!("League {} not found", league_id);
+    let conn = pool.get()?;
+    let query = leagues
+        .filter(id.eq(league_id))
+        .inner_join(league_rulesets::table)
+        .select(LEAGUE_DETAILS_COLUMNS);
+    let league = query.first(&conn);
+
+    if league.is_ok() {
+        Ok(league?)
+    } else {
+        Err(ApiError::NotFound(not_found))
+    }
+}
+
 pub fn get_all_details(pool: &PoolType) -> Result<LeaguesResponse, ApiError> {
     let conn = pool.get()?;
-    let query = leagues::table.inner_join(league_rulesets::table)
+    let query = leagues::table
+        .inner_join(league_rulesets::table)
         .select(LEAGUE_DETAILS_COLUMNS);
-
-    let debug = diesel::debug_query::<diesel::pg::Pg, _>(&query).to_string();
-    println!("debug statement: {:?}\n", debug);
     let all_leagues = query.load(&conn)?;
-    println!("{:?}\n", all_leagues);
 
     Ok(all_leagues.into())
 }
-
 
 #[cfg(test)]
 pub mod tests {
@@ -65,6 +77,14 @@ pub mod tests {
     pub fn get_all_leagues_with_details() -> Result<LeaguesResponse, ApiError> {
         let pool = get_pool();
         get_all_details(&pool)
+    }
+
+    #[test]
+    fn it_finds_league_with_details() {
+        let leagues = get_all_leagues_with_details().unwrap();
+        let league = &leagues.0[0];
+        let found_league = find_with_details(&get_pool(), league.id).unwrap();
+        assert_eq!(league, &found_league);
     }
 
     #[test]
