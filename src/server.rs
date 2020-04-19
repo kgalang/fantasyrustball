@@ -12,14 +12,16 @@ pub async fn server() -> std::io::Result<()> {
     env_logger::init();
 
     let mut listenfd = ListenFd::from_env();
-    // wraps on new app are ordered from most internal to most external
-    let mut server = HttpServer::new(move || {
+
+    let app = move || {
         App::new()
             .wrap(Cors::new().finish())
             .wrap(Logger::default())
             .configure(add_pool)
             .configure(routes)
-    });
+    };
+    // wraps on new app are ordered from most internal to most external
+    let mut server = HttpServer::new(app);
 
     // Can listen to file dir for changes and auto reload of server
     server = if let Some(l) = listenfd.take_tcp_listener(0)? {
