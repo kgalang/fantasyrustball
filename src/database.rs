@@ -68,7 +68,9 @@ where
     T: Connection + 'static,
 {
     let manager = ConnectionManager::<T>::new(config.database_url);
-    Pool::builder().build(manager)
+    Pool::builder()
+        .max_size(config.conn_per_pool)
+        .build(manager)
 }
 
 pub fn add_pool(cfg: &mut web::ServiceConfig) {

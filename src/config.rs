@@ -17,9 +17,11 @@ pub struct Config {
     pub auth_salt: String,
     pub database: DatabaseConnection,
     pub database_url: String,
+    pub conn_per_pool: u32,
     pub rust_backtrace: u8,
     pub rust_log: String,
     pub server: String,
+    pub server_workers: usize,
 }
 
 // Throw the Config struct into a CONFIG lazy_static to avoid multiple processing

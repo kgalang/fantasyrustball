@@ -30,5 +30,5 @@ pub async fn server() -> std::io::Result<()> {
         server.bind(&CONFIG.server)?
     };
 
-    server.run().await
+    server.workers(CONFIG.server_workers).run().await
 }
