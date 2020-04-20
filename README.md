@@ -184,7 +184,7 @@ This project is licensed under:
         pub id: Uuid,
         pub start: NaiveDateTime,
         pub rounds: i32,
-        pub current_round: Option<i32>,
+        pub current_round: i32,
     }
     ```
 - When looking into diesel, people often talk about `print_sql` macro. This doesn't exist in their updated docs anymore so I'm guessing they removed it.

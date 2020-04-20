@@ -3,7 +3,7 @@ CREATE TABLE leagues (
   name VARCHAR(100) NOT NULL,
   start TIMESTAMP NOT NULL,
   rounds INT NOT NULL,
-  current_round INT
+  current_round INT NOT NULL
 );
 
 CREATE TABLE league_rulesets (
