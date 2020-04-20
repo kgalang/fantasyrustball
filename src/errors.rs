@@ -3,12 +3,13 @@ use actix_web::{
     http::StatusCode,
     HttpResponse,
 };
+use chrono::format::ParseError as ChronoParseError;
 use derive_more::Display;
 use diesel::{
     r2d2::PoolError,
     result::{DatabaseErrorKind, Error as DBError},
 };
-use uuid::parser::ParseError;
+use uuid::parser::ParseError as UuidParseError;
 
 #[derive(Debug, Display, PartialEq)]
 #[allow(dead_code)]
@@ -96,8 +97,14 @@ impl From<PoolError> for ApiError {
 }
 
 /// Convert ParseErrors to ApiErrors
-impl From<ParseError> for ApiError {
-    fn from(error: ParseError) -> ApiError {
+impl From<UuidParseError> for ApiError {
+    fn from(error: UuidParseError) -> ApiError {
+        ApiError::ParseError(error.to_string())
+    }
+}
+
+impl From<ChronoParseError> for ApiError {
+    fn from(error: ChronoParseError) -> ApiError {
         ApiError::ParseError(error.to_string())
     }
 }
