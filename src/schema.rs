@@ -12,7 +12,7 @@ table! {
         name -> Varchar,
         start -> Timestamp,
         rounds -> Int4,
-        current_round -> Nullable<Int4>,
+        current_round -> Int4,
     }
 }
 

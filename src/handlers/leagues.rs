@@ -1,12 +1,15 @@
 use crate::database::PoolType;
 use crate::errors::ApiError;
 use crate::helpers::respond_json;
-use crate::models::leagues::{find_with_details, get_all_details};
+use crate::models::leagues::{
+    create, find_with_details, get_all_details, League, NewLeague, NewRuleset, Ruleset,
+};
 use actix_web::web::{block, Data, Json, Path};
 use chrono::NaiveDateTime;
 use rayon::prelude::*;
 use serde::Serialize;
 use uuid::Uuid;
+use validator::Validate;
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Queryable)]
 pub struct LeagueDetails {
@@ -14,12 +17,20 @@ pub struct LeagueDetails {
     pub name: String,
     pub start: NaiveDateTime,
     pub rounds: i32,
-    pub current_round: Option<i32>,
+    pub current_round: i32,
     pub points_per_mile: i32,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct LeaguesResponse(pub Vec<LeagueDetails>);
+
+#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
+pub struct CreateLeagueRequest {
+    pub name: String,
+    pub start: String,
+    pub rounds: i32,
+    pub points_per_mile: i32,
+}
 
 pub async fn get_league(
     league_id: Path<Uuid>,
@@ -32,6 +43,35 @@ pub async fn get_league(
 pub async fn get_leagues(pool: Data<PoolType>) -> Result<Json<LeaguesResponse>, ApiError> {
     let leagues: LeaguesResponse = block(move || get_all_details(&pool)).await?;
     respond_json(leagues)
+}
+
+pub async fn create_league(
+    pool: Data<PoolType>,
+    params: Json<CreateLeagueRequest>,
+) -> Result<Json<LeagueDetails>, ApiError> {
+    let new_league_id = Uuid::new_v4();
+    let date_time_str = [params.start.clone(), " 00:00:00".to_string()].concat();
+    let league_start = NaiveDateTime::parse_from_str(&date_time_str, "%Y-%m-%d %H:%M:%S")?;
+
+    let new_league: League = NewLeague {
+        id: new_league_id,
+        name: params.name.to_string(),
+        start: league_start,
+        rounds: params.rounds.into(),
+        current_round: 0,
+    }
+    .into();
+
+    let new_ruleset_id = Uuid::new_v4();
+    let new_ruleset: Ruleset = NewRuleset {
+        id: new_ruleset_id,
+        league_id: new_league_id,
+        points_per_mile: params.points_per_mile.into(),
+    }
+    .into();
+
+    let league = block(move || create(&pool, &new_league, &new_ruleset)).await?;
+    respond_json(league)
 }
 
 impl From<Vec<LeagueDetails>> for LeaguesResponse {
