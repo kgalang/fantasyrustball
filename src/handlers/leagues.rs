@@ -1,11 +1,11 @@
 use crate::database::PoolType;
 use crate::errors::ApiError;
-use crate::helpers::respond_json;
+use crate::helpers::{respond_json, respond_ok};
 use crate::models::leagues::{
-    create, find_with_details, get_all_details, update, League, NewLeague, NewRuleset, Ruleset,
-    UpdateLeague, UpdateRuleset,
+    create, delete, find_with_details, get_all_details, update, League, NewLeague, NewRuleset,
+    Ruleset, UpdateLeague, UpdateRuleset,
 };
-use actix_web::web::{block, Data, Json, Path};
+use actix_web::web::{block, Data, HttpResponse, Json, Path};
 use chrono::NaiveDateTime;
 use rayon::prelude::*;
 use serde::Serialize;
@@ -105,6 +105,14 @@ pub async fn update_league(
 
     let league = block(move || update(&pool, &update_league, &update_ruleset)).await?;
     respond_json(league)
+}
+
+pub async fn delete_league(
+    league_id: Path<Uuid>,
+    pool: Data<PoolType>,
+) -> Result<HttpResponse, ApiError> {
+    block(move || delete(&pool, *league_id)).await?;
+    respond_ok()
 }
 
 impl From<Vec<LeagueDetails>> for LeaguesResponse {

@@ -169,6 +169,19 @@ pub fn update(
     Ok(updated.clone().into())
 }
 
+pub fn delete(pool: &PoolType, league_id: Uuid) -> Result<(), ApiError> {
+    let conn = pool.get()?;
+
+    let ruleset_to_delete =
+        league_rulesets::table.filter(league_rulesets::league_id.eq(league_id.clone()));
+    diesel::delete(ruleset_to_delete).execute(&conn)?;
+
+    let league_to_delete = leagues::table.filter(leagues::id.eq(league_id.clone()));
+    diesel::delete(league_to_delete).execute(&conn)?;
+
+    Ok(())
+}
+
 impl From<NewLeague> for League {
     fn from(league: NewLeague) -> Self {
         League {
