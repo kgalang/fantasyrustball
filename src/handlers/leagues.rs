@@ -2,7 +2,8 @@ use crate::database::PoolType;
 use crate::errors::ApiError;
 use crate::helpers::respond_json;
 use crate::models::leagues::{
-    create, find_with_details, get_all_details, League, NewLeague, NewRuleset, Ruleset,
+    create, find_with_details, get_all_details, update, League, NewLeague, NewRuleset, Ruleset,
+    UpdateLeague, UpdateRuleset,
 };
 use actix_web::web::{block, Data, Json, Path};
 use chrono::NaiveDateTime;
@@ -26,6 +27,14 @@ pub struct LeaguesResponse(pub Vec<LeagueDetails>);
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
 pub struct CreateLeagueRequest {
+    pub name: String,
+    pub start: String,
+    pub rounds: i32,
+    pub points_per_mile: i32,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
+pub struct UpdateLeagueRequest {
     pub name: String,
     pub start: String,
     pub rounds: i32,
@@ -71,6 +80,30 @@ pub async fn create_league(
     .into();
 
     let league = block(move || create(&pool, &new_league, &new_ruleset)).await?;
+    respond_json(league)
+}
+
+pub async fn update_league(
+    league_id: Path<Uuid>,
+    pool: Data<PoolType>,
+    params: Json<UpdateLeagueRequest>,
+) -> Result<Json<LeagueDetails>, ApiError> {
+    let date_time_str = [params.start.clone(), " 00:00:00".to_string()].concat();
+    let league_start = NaiveDateTime::parse_from_str(&date_time_str, "%Y-%m-%d %H:%M:%S")?;
+
+    let update_league = UpdateLeague {
+        id: *league_id,
+        name: params.name.to_string(),
+        start: league_start,
+        rounds: params.rounds.into(),
+        current_round: 0,
+    };
+
+    let update_ruleset = UpdateRuleset {
+        points_per_mile: params.points_per_mile.into(),
+    };
+
+    let league = block(move || update(&pool, &update_league, &update_ruleset)).await?;
     respond_json(league)
 }
 

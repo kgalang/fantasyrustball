@@ -24,6 +24,16 @@ pub struct NewLeague {
     pub current_round: i32,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize, AsChangeset)]
+#[table_name = "leagues"]
+pub struct UpdateLeague {
+    pub id: Uuid,
+    pub name: String,
+    pub start: NaiveDateTime,
+    pub rounds: i32,
+    pub current_round: i32,
+}
+
 #[derive(
     Debug, Clone, Serialize, Deserialize, Queryable, Identifiable, Associations, Insertable,
 )]
@@ -39,6 +49,12 @@ pub struct NewRuleset {
     pub id: Uuid,
     pub points_per_mile: i32,
     pub league_id: Uuid,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, AsChangeset)]
+#[table_name = "league_rulesets"]
+pub struct UpdateRuleset {
+    pub points_per_mile: i32,
 }
 
 type LeagueDetailsColumns = (
@@ -114,6 +130,43 @@ pub fn create(
         points_per_mile: new_ruleset.points_per_mile,
     };
     Ok(created.clone().into())
+}
+
+pub fn update(
+    pool: &PoolType,
+    update_league: &UpdateLeague,
+    update_ruleset: &UpdateRuleset,
+) -> Result<LeagueDetails, ApiError> {
+    let conn = pool.get()?;
+
+    let related_ruleset: Ruleset = league_rulesets::table
+        .select(league_rulesets::all_columns)
+        .filter(league_rulesets::league_id.eq(update_league.id.clone()))
+        .first(&conn)?;
+
+    // Update ruleset
+    let ruleset_target = league_rulesets::table.filter(league_rulesets::id.eq(related_ruleset.id));
+    diesel::update(ruleset_target)
+        .set(update_ruleset)
+        .execute(&conn)?;
+
+    // Update league
+    let league_target = leagues::table.filter(leagues::id.eq(update_league.id));
+    diesel::update(league_target)
+        .set(update_league)
+        .execute(&conn)?;
+
+    // Create return obj
+    let updated = LeagueDetails {
+        id: update_league.id,
+        name: update_league.name.clone(),
+        start: update_league.start,
+        rounds: update_league.rounds,
+        current_round: update_league.current_round,
+        points_per_mile: update_ruleset.points_per_mile,
+    };
+
+    Ok(updated.clone().into())
 }
 
 impl From<NewLeague> for League {
