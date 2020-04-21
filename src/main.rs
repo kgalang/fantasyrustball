@@ -15,6 +15,7 @@ mod database;
 mod errors;
 pub mod handlers;
 mod helpers;
+mod managers;
 mod models;
 mod routes;
 mod schema;

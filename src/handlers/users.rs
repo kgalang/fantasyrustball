@@ -1,66 +1,14 @@
 use crate::database::PoolType;
 use crate::errors::ApiError;
 use crate::helpers::{respond_json, respond_ok};
-use crate::models::users::{create, delete, find, get_all, update, NewUser, UpdateUser, User};
+use crate::managers::users::{create, delete, find, get_all, update};
+use crate::models::users::{
+    CreateUserRequest, NewUser, UpdateUser, UpdateUserRequest, User, UserResponse, UsersResponse,
+};
 use crate::validate::validate;
 use actix_web::web::{block, Data, HttpResponse, Json, Path};
 use rayon::prelude::*;
-use serde::Serialize;
 use uuid::Uuid;
-use validator::Validate;
-
-#[derive(Debug, Deserialize, Serialize, PartialEq)]
-pub struct UserResponse {
-    pub id: Uuid,
-    pub first_name: String,
-    pub last_name: String,
-    pub email: String,
-}
-
-#[derive(Debug, Deserialize, Serialize, PartialEq)]
-pub struct UsersResponse(pub Vec<UserResponse>);
-
-#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct CreateUserRequest {
-    #[validate(length(
-        min = 3,
-        message = "first_name is required and must be at least 3 characters"
-    ))]
-    pub first_name: String,
-
-    #[validate(length(
-        min = 3,
-        message = "last_name is required and must be at least 3 characters"
-    ))]
-    pub last_name: String,
-
-    #[validate(email(message = "email must be a valid email"))]
-    pub email: String,
-
-    #[validate(length(
-        min = 6,
-        message = "password is required and must be at least 6 characters"
-    ))]
-    pub password: String,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct UpdateUserRequest {
-    #[validate(length(
-        min = 3,
-        message = "first_name is required and must be at least 3 characters"
-    ))]
-    pub first_name: String,
-
-    #[validate(length(
-        min = 3,
-        message = "last_name is required and must be at least 3 characters"
-    ))]
-    pub last_name: String,
-
-    #[validate(email(message = "email must be a valid email"))]
-    pub email: String,
-}
 
 /// Get a user
 pub async fn get_user(
@@ -148,7 +96,7 @@ impl From<Vec<User>> for UsersResponse {
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    use crate::models::users::tests::create_user as model_create_user;
+    use crate::managers::users::tests::create_user as model_create_user;
     use crate::tests::helpers::tests::{get_data_pool, get_pool};
 
     pub fn get_all_users() -> UsersResponse {
