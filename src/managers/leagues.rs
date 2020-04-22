@@ -1,6 +1,5 @@
 use crate::database::PoolType;
 use crate::errors::ApiError;
-use crate::handlers::leagues::{LeagueDetails, LeaguesResponse};
 use crate::models::leagues::*;
 use crate::schema::{league_rulesets, leagues};
 use diesel::prelude::*;

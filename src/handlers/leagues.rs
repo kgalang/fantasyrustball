@@ -2,42 +2,13 @@ use crate::database::PoolType;
 use crate::errors::ApiError;
 use crate::helpers::{respond_json, respond_ok};
 use crate::managers::leagues::{create, delete, find_with_details, get_all_details, update};
-use crate::models::leagues::{League, NewLeague, NewRuleset, Ruleset, UpdateLeague, UpdateRuleset};
+use crate::models::leagues::{
+    CreateLeagueRequest, League, LeagueDetails, LeaguesResponse, NewLeague, NewRuleset, Ruleset,
+    UpdateLeague, UpdateLeagueRequest, UpdateRuleset,
+};
 use actix_web::web::{block, Data, HttpResponse, Json, Path};
 use chrono::NaiveDateTime;
-use rayon::prelude::*;
-use serde::Serialize;
 use uuid::Uuid;
-use validator::Validate;
-
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Queryable)]
-pub struct LeagueDetails {
-    pub id: Uuid,
-    pub name: String,
-    pub start: NaiveDateTime,
-    pub rounds: i32,
-    pub current_round: i32,
-    pub points_per_mile: i32,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
-pub struct LeaguesResponse(pub Vec<LeagueDetails>);
-
-#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct CreateLeagueRequest {
-    pub name: String,
-    pub start: String,
-    pub rounds: i32,
-    pub points_per_mile: i32,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct UpdateLeagueRequest {
-    pub name: String,
-    pub start: String,
-    pub rounds: i32,
-    pub points_per_mile: i32,
-}
 
 pub async fn get_league(
     league_id: Path<Uuid>,
@@ -111,12 +82,6 @@ pub async fn delete_league(
 ) -> Result<HttpResponse, ApiError> {
     block(move || delete(&pool, *league_id)).await?;
     respond_ok()
-}
-
-impl From<Vec<LeagueDetails>> for LeaguesResponse {
-    fn from(leagues: Vec<LeagueDetails>) -> Self {
-        LeaguesResponse(leagues.into_par_iter().map(|league| league).collect())
-    }
 }
 
 #[cfg(test)]
