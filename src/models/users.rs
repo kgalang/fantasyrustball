@@ -7,7 +7,7 @@ use validator::Validate;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Queryable, Identifiable, Insertable)]
 pub struct User {
-    pub id: String,
+    pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
     pub email: String,
@@ -18,7 +18,7 @@ pub struct User {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct NewUser {
-    pub id: String,
+    pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
     pub email: String,
@@ -42,7 +42,7 @@ impl From<NewUser> for User {
 #[derive(Clone, Debug, Serialize, Deserialize, AsChangeset)]
 #[table_name = "users"]
 pub struct UpdateUser {
-    pub id: String,
+    pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
     pub email: String,
@@ -50,7 +50,7 @@ pub struct UpdateUser {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AuthUser {
-    pub id: String,
+    pub id: Uuid,
     pub email: String,
 }
 

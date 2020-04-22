@@ -20,7 +20,7 @@ pub fn find(pool: &PoolType, user_id: Uuid) -> Result<UserResponse, ApiError> {
     let not_found = format!("User {} not found", user_id);
     let conn = pool.get()?;
     let user = users
-        .filter(id.eq(user_id.to_string()))
+        .filter(id.eq(user_id))
         .first::<User>(&conn)
         .map_err(|_| ApiError::NotFound(not_found))?;
 
@@ -63,7 +63,7 @@ pub fn update(pool: &PoolType, update_user: &UpdateUser) -> Result<UserResponse,
         .filter(id.eq(update_user.id.clone()))
         .set(update_user)
         .execute(&conn)?;
-    find(&pool, Uuid::parse_str(&update_user.id)?)
+    find(&pool, update_user.id)
 }
 
 /// Delete a user
@@ -72,7 +72,7 @@ pub fn delete(pool: &PoolType, user_id: Uuid) -> Result<(), ApiError> {
 
     let conn = pool.get()?;
     diesel::delete(users)
-        .filter(id.eq(user_id.to_string()))
+        .filter(id.eq(user_id))
         .execute(&conn)?;
     Ok(())
 }
@@ -90,7 +90,7 @@ pub mod tests {
     pub fn create_user() -> Result<UserResponse, ApiError> {
         let user_id = Uuid::new_v4();
         let new_user = NewUser {
-            id: user_id.to_string(),
+            id: user_id,
             first_name: "Model".to_string(),
             last_name: "Test".to_string(),
             email: "model-test@nothing.org".to_string(),
@@ -135,7 +135,7 @@ pub mod tests {
         let users = get_all_users().unwrap();
         let user = &users.0[1];
         let update_user = UpdateUser {
-            id: user.id.to_string(),
+            id: user.id,
             first_name: "ModelUpdate".to_string(),
             last_name: "TestUpdate".to_string(),
             email: "model-update-test@nothing.org".to_string(),
@@ -151,7 +151,7 @@ pub mod tests {
     fn it_fails_to_update_a_nonexistent_user() {
         let user_id = Uuid::new_v4();
         let update_user = UpdateUser {
-            id: user_id.to_string(),
+            id: user_id,
             first_name: "ModelUpdateFailure".to_string(),
             last_name: "TestUpdateFailure".to_string(),
             email: "model-update-failure-test@nothing.org".to_string(),

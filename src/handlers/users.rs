@@ -36,7 +36,7 @@ pub async fn create_user(
     // update when auth is added
     let user_id = Uuid::new_v4();
     let new_user: User = NewUser {
-        id: user_id.to_string(),
+        id: user_id.into(),
         first_name: params.first_name.to_string(),
         last_name: params.last_name.to_string(),
         email: params.email.to_string(),
@@ -58,7 +58,7 @@ pub async fn update_user(
     // temporarily use the user's id for updated_at
     // update when auth is added
     let update_user = UpdateUser {
-        id: user_id.to_string(),
+        id: *user_id,
         first_name: params.first_name.to_string(),
         last_name: params.last_name.to_string(),
         email: params.email.to_string(),
@@ -79,7 +79,7 @@ pub async fn delete_user(
 impl From<User> for UserResponse {
     fn from(user: User) -> Self {
         UserResponse {
-            id: Uuid::parse_str(&user.id).unwrap(),
+            id: user.id,
             first_name: user.first_name.to_string(),
             last_name: user.last_name.to_string(),
             email: user.email.to_string(),
