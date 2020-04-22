@@ -1,10 +1,8 @@
 use crate::database::PoolType;
 use crate::errors::ApiError;
 use crate::helpers::{respond_json, respond_ok};
-use crate::models::leagues::{
-    create, delete, find_with_details, get_all_details, update, League, NewLeague, NewRuleset,
-    Ruleset, UpdateLeague, UpdateRuleset,
-};
+use crate::managers::leagues::{create, delete, find_with_details, get_all_details, update};
+use crate::models::leagues::{League, NewLeague, NewRuleset, Ruleset, UpdateLeague, UpdateRuleset};
 use actix_web::web::{block, Data, HttpResponse, Json, Path};
 use chrono::NaiveDateTime;
 use rayon::prelude::*;
