@@ -255,3 +255,7 @@ This project is licensed under:
 
     Please let me know if this helps or ends up being relevant to your issues!
     ```
+
+**Disclaimer**
+- I'm coding this project as an experiment to learn more about rust and the different crates I use. This is not an accurate representation of how I code for an app that I'd put in prod.
+  - Ex. I'm using diesel ORM and organizing models in different ways to try different methods.
