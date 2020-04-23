@@ -23,6 +23,18 @@ pub struct NewLeague {
     pub current_round: i32,
 }
 
+impl From<NewLeague> for League {
+    fn from(league: NewLeague) -> Self {
+        League {
+            id: league.id,
+            name: league.name,
+            start: league.start,
+            rounds: league.rounds,
+            current_round: league.current_round,
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, AsChangeset)]
 #[table_name = "leagues"]
 pub struct UpdateLeague {
@@ -48,6 +60,16 @@ pub struct NewRuleset {
     pub id: Uuid,
     pub points_per_mile: i32,
     pub league_id: Uuid,
+}
+
+impl From<NewRuleset> for Ruleset {
+    fn from(ruleset: NewRuleset) -> Self {
+        Ruleset {
+            id: ruleset.id,
+            league_id: ruleset.league_id,
+            points_per_mile: ruleset.points_per_mile,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, AsChangeset)]

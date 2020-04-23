@@ -130,28 +130,6 @@ pub fn delete(pool: &PoolType, league_id: Uuid) -> Result<(), ApiError> {
     Ok(())
 }
 
-impl From<NewLeague> for League {
-    fn from(league: NewLeague) -> Self {
-        League {
-            id: league.id,
-            name: league.name,
-            start: league.start,
-            rounds: league.rounds,
-            current_round: league.current_round,
-        }
-    }
-}
-
-impl From<NewRuleset> for Ruleset {
-    fn from(ruleset: NewRuleset) -> Self {
-        Ruleset {
-            id: ruleset.id,
-            league_id: ruleset.league_id,
-            points_per_mile: ruleset.points_per_mile,
-        }
-    }
-}
-
 #[cfg(test)]
 pub mod tests {
     use super::*;
