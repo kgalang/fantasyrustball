@@ -1,9 +1,9 @@
 CREATE TABLE teams (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name VARCHAR(100) NOT NULL,
-  wins INT DEFAULT 0,
-  losses INT DEFAULT 0,
-  ties INT DEFAULT 0,
+  wins INT NOT NULL DEFAULT 0,
+  losses INT NOT NULL DEFAULT 0,
+  ties INT NOT NULL DEFAULT 0,
   league_id UUID NOT NULL REFERENCES leagues (id) ON DELETE CASCADE
 );
 

@@ -36,9 +36,9 @@ table! {
     teams (id) {
         id -> Uuid,
         name -> Varchar,
-        wins -> Nullable<Int4>,
-        losses -> Nullable<Int4>,
-        ties -> Nullable<Int4>,
+        wins -> Int4,
+        losses -> Int4,
+        ties -> Int4,
         league_id -> Uuid,
     }
 }
