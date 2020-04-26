@@ -15,7 +15,7 @@ pub struct Team {
     pub league_id: Uuid,
 }
 
-#[derive(Debug, Queryable, Identifiable, Associations, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable, Associations, AsChangeset, Insertable)]
 #[belongs_to(Team)]
 #[table_name = "team_owners"]
 pub struct Owner {
@@ -24,7 +24,7 @@ pub struct Owner {
     pub team_id: Uuid,
 }
 
-#[derive(Debug, Queryable, Identifiable, Associations, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable, Associations, AsChangeset, Insertable)]
 #[belongs_to(Team)]
 #[table_name = "team_players"]
 pub struct Player {
